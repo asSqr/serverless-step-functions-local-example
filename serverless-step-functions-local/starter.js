@@ -12,6 +12,11 @@ const start = options => {
     args.push(options.port);
   }
 
+  if (options.region) {
+    args.push('--region');
+    args.push(options.region);
+  }
+
   const child = spawn('unbuffer', args, {
     cwd: options.path,
     env: process.env

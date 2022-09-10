@@ -1,10 +1,10 @@
 handler: handler/entrypoint/entrypoint.entrypoint
-name: ${self:service}${self:custom.stage}entrypoint
+name: ${self:service}entrypoint
 description: "エントリーポイント"
 environment: ${file(./config/functions/environment.yml)}
 timeout: 120
-# layers:
-  # - ${self:custom.requirements_layer}
+layers:
+  - ${self:custom.requirements_layer}
 events:
   - http:
       path: ${self:service}entrypoint

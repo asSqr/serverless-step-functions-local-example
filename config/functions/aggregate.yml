@@ -1,10 +1,10 @@
 handler: handler/aggregate/aggregate.aggregate
-name: ${self:service}${self:custom.stage}aggregate
+name: ${self:service}aggregate
 description: "集計処理"
 environment: ${file(./config/functions/environment.yml)}
 timeout: 120
-# layers:
-  # - ${self:custom.requirements_layer}
+layers:
+  - ${self:custom.requirements_layer}
 events:
   - http:
       path: ${self:service}aggregate

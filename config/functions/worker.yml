@@ -1,10 +1,10 @@
 handler: handler/worker/worker.worker
-name: ${self:service}${self:custom.stage}worker
+name: ${self:service}worker
 description: "計算ロジック"
 environment: ${file(./config/functions/environment.yml)}
 timeout: 300
-# layers:
-  # - ${self:custom.requirements_layer}
+layers:
+  - ${self:custom.requirements_layer}
 events:
   - http:
       path: ${self:service}worker

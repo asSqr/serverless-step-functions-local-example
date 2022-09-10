@@ -228,6 +228,8 @@ class ServerlessStepFunctionsLocal {
                 .map(capitalizeHead)
                 .join('');
 
+            // data.OutputValue example: arn:aws:lambda:ap-northeast-1:654766906481:function:serverless-step-functions-exampleprodaggregate:5
+            // -> ServerlessStepFunctionsExampleprodaggregate
             return data.OutputValue
                 .split(':')
                 .slice(0, -1)
@@ -393,6 +395,8 @@ class ServerlessStepFunctionsLocal {
             }
           ]
         };
+
+        console.log(params);
 
         this.eventBridgeAPI.putEvents(params, function(err, data) {
           if (err) {

@@ -15,7 +15,7 @@ This repository is the [serverless framework](https://github.com/serverless/serv
     aws_access_key_id=<Your AWS Access Key ID>
     aws_secret_access_key=<Your AWS Secret Access Key>
     ```
-- install `unbuffer` command
+- install `unbuffer` command (Mac OS)
     ```bash
     $ brew install expect
     ```
@@ -57,6 +57,7 @@ This repository is the [serverless framework](https://github.com/serverless/serv
 - install related package
     ```bash
     $ npm install stepfunctions-localhost serverless-pseudo-parameters serverless-dotenv-plugin serverless-step-functions serverless-step-functions-local serverless-sam
+    $ pip install pyyaml
     ```
 - version
     ```bash
@@ -87,32 +88,33 @@ First, deploy with serverless framework.
     ```bash
     $ npx serverless package --aws-profile test-profile
     ```
-- export SAM template (if there is no template.yml)
+- export the SAM template and execute the converter (if there is no template.yml)
     ```bash
     $ npx serverless sam export --output ./template.yml
+    $ python ./scripts/sam_template_converter.py
     ```
-    Then, add the below snippet to `template.yml`:
+    Then, add the below snippet to `template.yml` under `Resources:`:
     ```yaml
-    Resources:
         LambdaLayer:
             Type: AWS::Serverless::LayerVersion
             Properties:
                 Description: Layer description
-                ContentUri: 'lambda_layer/'
+                ContentUri: 'layer_requirements/'
                 CompatibleRuntimes:
                     - python3.8
-        Metadata:
-            BuildMethod: python3.8
+            Metadata:
+                BuildMethod: python3.8
+
     Outputs:
-        ServerlessStepFunctionsExampleprodentrypoint:
-            Description: 'serverless-step-functions-example-prod-entrypoint'
-            Value: !GetAtt ServerlessStepFunctionsExampleprodentrypoint.Arn
-        ServerlessStepFunctionsExampleprodworker:
-            Description: 'serverless-step-functions-example-prod-worker'
-            Value: !GetAtt ServerlessStepFunctionsExampleprodworker.Arn
-        ServerlessStepFunctionsExampleprodaggregate:
-            Description: 'serverless-step-functions-example-prod-aggregate'
-            Value: !GetAtt ServerlessStepFunctionsExampleprodaggregate.Arn
+        ServerlessStepFunctionsExampleentrypoint:
+            Description: 'serverless-step-functions-example-entrypoint'
+            Value: !GetAtt ServerlessStepFunctionsExampleentrypoint.Arn
+        ServerlessStepFunctionsExampleworker:
+            Description: 'serverless-step-functions-example-worker'
+            Value: !GetAtt ServerlessStepFunctionsExampleworker.Arn
+        ServerlessStepFunctionsExampleaggregate:
+            Description: 'serverless-step-functions-example-aggregate'
+            Value: !GetAtt ServerlessStepFunctionsExampleaggregate.Arn
     ```
     And add the below setting to each Lambda function:
     ```yaml
@@ -131,7 +133,6 @@ c.f. https://kazuhira-r.hatenablog.com/entry/2019/04/23/000355 (in Japanese)
   ```
   ```bash
   $ aws stepfunctions --endpoint http://localhost:8083 start-execution --state-machine arn:aws:states:ap-northeast-1:012345678901:stateMachine:StateMachine --name Lambda_local --input ""
-  ```
   ```
 - invoke a single Lambda function
     ```bash

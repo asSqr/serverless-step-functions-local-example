@@ -54,9 +54,9 @@ custom:
   commonTag:
     - Key: "Service"
       Value: ${self:service}
-  # requirements_service: python-requirements-layer # layer側で設定したservice
-  # requirements_export: PythonRequirementsLambdaLayerExport # layer側で設定したOutputsの名前
-  # requirements_layer: ${cf:${self:custom.requirements_service}-${self:custom.stage}.${self:custom.requirements_export}}
+  requirements_service: python-requirements-layer # layer側で設定したservice
+  requirements_export: PythonRequirementsLambdaLayerExport # layer側で設定したOutputsの名前
+  requirements_layer: ${cf:${self:custom.requirements_service}-${self:custom.stage}.${self:custom.requirements_export}}
   stepFunctionsLocal:
     accountId: '012345678901'
     region: ap-northeast-1

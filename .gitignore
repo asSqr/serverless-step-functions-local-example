@@ -136,3 +136,4 @@ package-lock.json
 .aws-sam/
 .serverless/
 .step-functions-local/
+template.yml
