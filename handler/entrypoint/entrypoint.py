@@ -1,2 +1,2 @@
 def entrypoint():
-    pass
+    return {}

@@ -1,2 +1,2 @@
 def worker():
-    pass
+    return {}

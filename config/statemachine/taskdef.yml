@@ -12,7 +12,7 @@ stateMachines:
           Type: Map
           Next: Aggregate
           Iterator:
-            StartAt: Task
+            StartAt: Worker
             States:
               Worker:
                 Type: Task

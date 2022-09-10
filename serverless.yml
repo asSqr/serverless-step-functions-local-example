@@ -63,7 +63,6 @@ custom:
     lambdaEndpoint: http://localhost:4002
   serverless-offline:
     httpPort: 4002
-  accountId: 770323421396
 
 package:
   include:

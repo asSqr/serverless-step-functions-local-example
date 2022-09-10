@@ -260,16 +260,16 @@ Resources:
       Principal: apigateway.amazonaws.com
 
 Resources:
-  LambdaLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-    Description: Layer description
-    ContentUri: 'lambda_layer/'
-    CompatibleRuntimes:
-        - python3.8
-    Metadata:
-    BuildMethod: python3.8
-    
+    LambdaLayer:
+      Type: AWS::Serverless::LayerVersion
+      Properties:
+        Description: Layer description
+        ContentUri: 'lambda_layer/'
+        CompatibleRuntimes:
+            - python3.8
+      Metadata:
+        BuildMethod: python3.8
+      
 Outputs:
   ServerlessStepFunctionsExampleprodentrypoint:
     Description: 'serverless-step-functions-example-prod-entrypoint'
