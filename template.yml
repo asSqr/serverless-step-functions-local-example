@@ -1,0 +1,282 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'SAM template for Serverless framework service: '
+Resources:
+  ServerlessStepFunctionsExampleprodentrypoint:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler/entrypoint/entrypoint.entrypoint
+      Runtime: python3.8
+      CodeUri: >-
+        /Users/ryoshimura/Documents/serverless-step-functions-local-example/.serverless/serverless-step-functions-example.zip
+      Description: エントリーポイント
+      Layers:
+        - !Ref LambdaLayer
+      MemorySize: 128
+      Timeout: 120
+      Environment:
+        Variables:
+          DISCORD_WEBHOOK: >-
+            https://discord.com/api/webhooks/1018043165112025139/0xXEnYdVHp7Wy9pS1U089K6tqEVkUDi66C9tvCiNJdrZbcojspbADaG_Tx-nPW8hrKAe
+      Events:
+        Event1:
+          Type: Api
+          Properties:
+            Path: /serverless-step-functions-exampleentrypoint
+            Method: post
+            RestApiId:
+              Ref: ServerlessStepFunctionsExample
+  ServerlessStepFunctionsExample:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        swagger: '2.0'
+        info:
+          title:
+            Ref: 'AWS::StackName'
+        paths:
+          /serverless-step-functions-exampleentrypoint:
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: '{ "statusCode" : 200 }'
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''post'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: '{}'
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  'Fn::Sub': >-
+                    arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ServerlessStepFunctionsExampleprodentrypoint.Arn}/invocations
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''post'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: '{}'
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+          /serverless-step-functions-exampleworker:
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: '{ "statusCode" : 200 }'
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''post'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: '{}'
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  'Fn::Sub': >-
+                    arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ServerlessStepFunctionsExampleprodworker.Arn}/invocations
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''post'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: '{}'
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+          /serverless-step-functions-exampleaggregate:
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: '{ "statusCode" : 200 }'
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''post'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: '{}'
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  'Fn::Sub': >-
+                    arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ServerlessStepFunctionsExampleprodaggregate.Arn}/invocations
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+                      method.response.header.Access-Control-Allow-Methods: '''post'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: '{}'
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+  ServerlessStepFunctionsExampleprodentrypointLambdaPermission:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - ServerlessStepFunctionsExampleprodentrypoint
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName:
+        Ref: ServerlessStepFunctionsExampleprodentrypoint
+      Principal: apigateway.amazonaws.com
+  ServerlessStepFunctionsExampleprodworker:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler/worker/worker.worker
+      Runtime: python3.8
+      CodeUri: >-
+        /Users/ryoshimura/Documents/serverless-step-functions-local-example/.serverless/serverless-step-functions-example.zip
+      Description: 計算ロジック
+      Layers:
+        - !Ref LambdaLayer
+      MemorySize: 128
+      Timeout: 300
+      Environment:
+        Variables:
+          DISCORD_WEBHOOK: >-
+            https://discord.com/api/webhooks/1018043165112025139/0xXEnYdVHp7Wy9pS1U089K6tqEVkUDi66C9tvCiNJdrZbcojspbADaG_Tx-nPW8hrKAe
+      Events:
+        Event1:
+          Type: Api
+          Properties:
+            Path: /serverless-step-functions-exampleworker
+            Method: post
+            RestApiId:
+              Ref: ServerlessStepFunctionsExample
+  ServerlessStepFunctionsExampleprodworkerLambdaPermission:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - ServerlessStepFunctionsExampleprodworker
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName:
+        Ref: ServerlessStepFunctionsExampleprodworker
+      Principal: apigateway.amazonaws.com
+  ServerlessStepFunctionsExampleprodaggregate:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler/aggregate/aggregate.aggregate
+      Runtime: python3.8
+      CodeUri: >-
+        /Users/ryoshimura/Documents/serverless-step-functions-local-example/.serverless/serverless-step-functions-example.zip
+      Description: 集計処理
+      Layers:
+        - !Ref LambdaLayer
+      MemorySize: 128
+      Timeout: 120
+      Environment:
+        Variables:
+          DISCORD_WEBHOOK: >-
+            https://discord.com/api/webhooks/1018043165112025139/0xXEnYdVHp7Wy9pS1U089K6tqEVkUDi66C9tvCiNJdrZbcojspbADaG_Tx-nPW8hrKAe
+      Events:
+        Event1:
+          Type: Api
+          Properties:
+            Path: /serverless-step-functions-exampleaggregate
+            Method: post
+            RestApiId:
+              Ref: ServerlessStepFunctionsExample
+  ServerlessStepFunctionsExampleprodaggregateLambdaPermission:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - ServerlessStepFunctionsExampleprodaggregate
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName:
+        Ref: ServerlessStepFunctionsExampleprodaggregate
+      Principal: apigateway.amazonaws.com
+
+Resources:
+  LambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+    Description: Layer description
+    ContentUri: 'lambda_layer/'
+    CompatibleRuntimes:
+        - python3.8
+    Metadata:
+    BuildMethod: python3.8
+    
+Outputs:
+  ServerlessStepFunctionsExampleprodentrypoint:
+    Description: 'serverless-step-functions-example-prod-entrypoint'
+    Value: !GetAtt ServerlessStepFunctionsExampleprodentrypoint.Arn
+  ServerlessStepFunctionsExampleprodworker:
+    Description: 'serverless-step-functions-example-prod-worker'
+    Value: !GetAtt ServerlessStepFunctionsExampleprodworker.Arn
+  ServerlessStepFunctionsExampleprodaggregate:
+    Description: 'serverless-step-functions-example-prod-aggregate'
+    Value: !GetAtt ServerlessStepFunctionsExampleprodaggregate.Arn

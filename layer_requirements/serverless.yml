@@ -1,0 +1,21 @@
+service: python-requirements-layer
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    layer: true # ここをtrueに
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ap-northeast-1
+  stage: prod
+
+resources:
+  Outputs:
+    PythonRequirementsLambdaLayerExport: # function側から使いたい名前にする
+      Value:
+        Ref: PythonRequirementsLambdaLayer # これはpythonRequirementsで設定されるので固定値

@@ -1,0 +1,12 @@
+handler: handler/aggregate/aggregate.aggregate
+name: ${self:service}${self:custom.stage}aggregate
+description: "集計処理"
+environment: ${file(./config/functions/environment.yml)}
+timeout: 120
+# layers:
+  # - ${self:custom.requirements_layer}
+events:
+  - http:
+      path: ${self:service}aggregate
+      method: post
+      cors: true

@@ -6,7 +6,7 @@
 
 <p align="center">Local emulation of AWS Step Functions with serverless framework</p>
 
-This repository is the [serverless framework](https://github.com/serverless/serverless) plugin for local invocation of AWS Step Functions modifying the existing [serverless-step-functions-local](https://github.com/codetheweb/serverless-step-functions-local) plugin.
+This repository is the [serverless framework](https://github.com/serverless/serverless) example for local invocation of AWS Step Functions modifying the existing [serverless-step-functions-local](https://github.com/codetheweb/serverless-step-functions-local) plugin.
 
 ## Local invocation
 - create an AWS profile (for example, `test-profile`) in `~/.aws/crendential`
@@ -14,24 +14,57 @@ This repository is the [serverless framework](https://github.com/serverless/serv
     ```bash
     $ brew install expect
     ```
-- install aws sam cli
+- install aws-sam-cli
     ```bash
     $ brew tap aws/tap
     $ brew install aws-sam-cli
     ```
 - install related package
     ```bash
-    $ npm install stepfunctions-localhost
+    $ npm install stepfunctions-localhost serverless-pseudo-parameters serverless-dotenv-plugin serverless-step-functions serverless-step-functions-local serverless-sam
     ```
 - package with serverless framework
     ```bash
     $ npx serverless package --aws-profile test-profile
     ```
+- export SAM template (if there is no template.yml)
+    ```bash
+    $ npx serverless sam export --output ./template.yml
+    ```
+    Then, add the below snippet to `template.yml`:
+    ```yaml
+    Resources:
+        LambdaLayer:
+            Type: AWS::Serverless::LayerVersion
+            Properties:
+            Description: Layer description
+            ContentUri: 'lambda_layer/'
+            CompatibleRuntimes:
+                - python3.8
+            Metadata:
+            BuildMethod: python3.8
+    Outputs:
+        ServerlessStepFunctionsExampleprodentrypoint:
+            Description: 'serverless-step-functions-example-prod-entrypoint'
+            Value: !GetAtt ServerlessStepFunctionsExampleprodentrypoint.Arn
+        ServerlessStepFunctionsExampleprodworker:
+            Description: 'serverless-step-functions-example-prod-worker'
+            Value: !GetAtt ServerlessStepFunctionsExampleprodworker.Arn
+        ServerlessStepFunctionsExampleprodaggregate:
+            Description: 'serverless-step-functions-example-prod-aggregate'
+            Value: !GetAtt ServerlessStepFunctionsExampleprodaggregate.Arn
+    ```
+    And add the below setting to each Lambda function:
+    ```yaml
+    Layers:
+        - !Ref LambdaLayer
+    ```
+    c.f. https://qiita.com/hayao_k/items/f8c7ad5e35e29d590957 (in Japanese)
 - build SAM layer
     ```bash
-    $ sam build --use-container MyLayer
+    $ sam build --use-container LambdaLayer
     ```
-- execute two commands below to invoke local Step Functions   
+- execute two commands below on independent terminal to invoke local Step Functions   
 c.f. https://kazuhira-r.hatenablog.com/entry/2019/04/23/000355 (in Japanese)
   ```bash
   $ npx serverless stepf offline --aws-profile test-profile
@@ -42,15 +75,17 @@ c.f. https://kazuhira-r.hatenablog.com/entry/2019/04/23/000355 (in Japanese)
 - version
     ```bash
     $ sam --version
-    > SAM CLI, version 1.36.0
+    
+    SAM CLI, version 1.56.1
     ```
 
     ```bash
     $ npx serverless --version
-    > Framework Core: 2.69.1 (local)
-    Plugin: 5.5.1
-    SDK: 4.3.0
-    Components: 3.18.1
+    
+    Framework Core: 2.72.3 (local)
+    Plugin: 5.5.4
+    SDK: 4.3.2
+    Components: 3.18.2
     ```
 
 - invoke a single Lambda function
@@ -59,34 +94,6 @@ c.f. https://kazuhira-r.hatenablog.com/entry/2019/04/23/000355 (in Japanese)
     --endpoint-url http://localhost:4000 \
     --function-name LambdaFunction
     ```
-
-- export SAM template
-    ```bash
-    $ npx serverless sam export --output ./template.yml
-    ```
-    Then, add the below snippet to `template.yml`:
-    ```yaml
-    Resources:
-        MyLayer:
-            Type: AWS::Serverless::LayerVersion
-            Properties:
-            Description: Layer description
-            ContentUri: 'my_layer/'
-            CompatibleRuntimes:
-                - python3.8
-            Metadata:
-            BuildMethod: python3.8
-    Outputs:
-    LambdaFunction:
-        Description: 'lambda-func'
-        Value: !GetAtt LambdaFunction.Arn
-    ```
-    And add the below setting to each Lambda function:
-    ```yaml
-    Layers:
-        - !Ref MyLayer
-    ```
-    c.f. https://qiita.com/hayao_k/items/f8c7ad5e35e29d590957 (in Japanese)
 
 ## Deployment
 - execute the below command
