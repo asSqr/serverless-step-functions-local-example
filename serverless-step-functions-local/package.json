@@ -1,0 +1,48 @@
+{
+  "name": "serverless-step-functions-local",
+  "version": "0.1.9",
+  "description": "Run AWS step functions offline with Serverless",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo"
+  },
+  "author": "Max Isom <codetheweb@icloud.com> (https://maxisom.me)",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.476.0",
+    "chalk": "^2.4.2",
+    "stepfunctions-localhost": "^0.2.0",
+    "tcp-port-used": "^1.0.1"
+  },
+  "xo": {
+    "space": true
+  },
+  "devDependencies": {
+    "xo": "^0.24.0"
+  },
+  "keywords": [
+    "⚡️",
+    "serverless",
+    "serverless offline",
+    "serverless plugin",
+    "plugin",
+    "sls",
+    "offline",
+    "local",
+    "step functions",
+    "state machines",
+    "step",
+    "function",
+    "state",
+    "machine",
+    "aws"
+  ],
+  "bugs": {
+    "url": "https://github.com/codetheweb/serverless-step-functions-local/issues"
+  },
+  "homepage": "https://github.com/codetheweb/serverless-step-functions-local#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codetheweb/serverless-step-functions-local.git"
+  }
+}
