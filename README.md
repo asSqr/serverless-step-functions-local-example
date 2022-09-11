@@ -91,7 +91,7 @@ First, deploy with serverless framework.
 - export the SAM template and execute the converter (if there is no template.yml)
     ```bash
     $ npx serverless sam export --output ./template.yml
-    $ python ./scripts/sam_template_converter.py
+    $ python ./scripts/sam_template_converter/main.py
     ```
     Then, add the below snippet to `template.yml` under `Resources:`:
     ```yaml
