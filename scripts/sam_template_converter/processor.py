@@ -1,25 +1,37 @@
 from typing import Dict, Any
-from .config import Config
-from .yaml_repository import YamlRepository
+from config import Config
+from yaml_repository import BaseYamlRepository
+from file_repository import BaseFileRepository
 
         
 class Processor:
     config: Config
-    yaml_repo: YamlRepository
+    yaml_repo: BaseYamlRepository
+    file_repo: BaseFileRepository
     
-    def __init__(self, config: Config, yaml_repo: YamlRepository):
+    
+    def __init__(self, config: Config, yaml_repo: BaseYamlRepository, file_repo: BaseFileRepository):
         self.config = config
         self.yaml_repo = yaml_repo
-        
+        self.file_repo = file_repo
+
+
     def process(self):
-        yaml_dict = self.yaml_repo.load_yaml(self.config.TEMPLATE_YAML_FILE_NAME)
-        yaml_dict = self.convert(yaml_dict)
-        self.yaml_repo.save_yml(yaml_dict)
+        yaml_file_name = self.config.TEMPLATE_YAML_FILE_NAME
         
-    def convert(self, yaml_dict: Dict[str, Any]) -> Dict[str, Any]:    
-        for resource in yaml_dict['Resources']:
+        yaml_dict = self.yaml_repo.load(yaml_file_name)
+        yaml_dict = self._convert(yaml_dict)
+        self.yaml_repo.save(yaml_file_name, yaml_dict)
+        
+        yaml_content = self.file_repo.load(yaml_file_name)
+        yaml_content = self._replace_with_yaml_invalid_str(yaml_content)
+        self.file_repo.save(yaml_file_name, yaml_content)
+        
+        
+    def _convert(self, yaml_dict: Dict[str, Any]) -> Dict[str, Any]:    
+        for _, resource in yaml_dict['Resources'].items():
             if resource['Type'] == self.config.TYPE_LAMBDA_FUNCTION:
-                resource['Properties']['Layers'] = ['!Ref LambdaLayer']
+                resource['Properties']['Layers'] = [self.config.REF_LAMBDA_LAYER]
         
         yaml_dict['Resources'].update({
             **yaml_dict['Resources'],
@@ -30,5 +42,16 @@ class Processor:
         
         return yaml_dict
 
-    def replace_invalid_str(self, yaml_str: str) -> str:
-        pass
+
+    def _replace_with_yaml_invalid_str(self, yaml_str: str) -> str:
+        # '!GetAtt <Arn>' -> !GetAtt <Arn>
+        for output_setting in self.config.OUTPUT_SETTINGS.values():    
+            get_arn_command = output_setting['Value']
+            
+            yaml_str = yaml_str.replace(f"'{get_arn_command}'", get_arn_command)
+            
+        # '!Ref LambdaLayer' -> !Ref LambdaLayer
+        ref_lambda_layer = self.config.REF_LAMBDA_LAYER
+        yaml_str = yaml_str.replace(f"'{ref_lambda_layer}'", ref_lambda_layer)
+
+        return yaml_str

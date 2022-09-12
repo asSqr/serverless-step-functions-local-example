@@ -1,13 +1,17 @@
 from glob import glob
 import os
 from typing import Dict, Any
-from .yaml_repository import YamlRepository
+from yaml_repository import BaseYamlRepository, YamlRepository
+from utils import kebab_to_upper_camel_case
+
 
 class Config:
+    yaml_repo: BaseYamlRepository
+    
     '''
     Resource Type of Lambda Function
     '''
-    TYPE_LAMBDA_FUNCTION = 'AWS::Serverless::Function'
+    TYPE_LAMBDA_FUNCTION: str = 'AWS::Serverless::Function'
 
     '''
     Settings of Lambda Layer
@@ -25,6 +29,11 @@ class Config:
             }
         }
     }
+    
+    '''
+    Reference to Lambda layer
+    '''
+    REF_LAMBDA_LAYER: str = '!Ref LambdaLayer'
 
     '''
     Output Settings (auto-generated)
@@ -45,19 +54,25 @@ class Config:
             }
         }
     '''
-    OUTPUT_SETTINGS: Dict[str, Any]
+    OUTPUT_SETTINGS: Dict[str, Any] = {}
     
+    '''
+    SAM Template Yaml
+    '''
     TEMPLATE_YAML_FILE_NAME: str = './template.yml'
     
+    '''
+    Serverless Config Yaml
+    '''
     SERVERLESS_YAML_FILE_NAME: str = './serverless.yml'
     
-    yaml_repo: YamlRepository
     
-    def __init__(self, yaml_repo: YamlRepository):
+    def __init__(self, yaml_repo: BaseYamlRepository):
         self.yaml_repo = yaml_repo
-        self.generate_output_settings()
+        self._generate_output_settings()
     
-    def generate_output_settings(self) -> None:
+    
+    def _generate_output_settings(self) -> None:
         service_name = self._get_service_name()
         
         for handler_folder in glob('./handler/**'):
@@ -69,17 +84,8 @@ class Config:
                 'Value': f'!GetAtt {identifier}.Arn'
             }
     
+    
     def _get_service_name(self) -> str:
-        obj = self.yaml_repo.load_yaml(self.SERVERLESS_YAML_FILE_NAME)
+        obj = self.yaml_repo.load(self.SERVERLESS_YAML_FILE_NAME)
         
-        return self._kebab_to_upper_camel_case(obj['service'])
-    
-    def _kebab_to_upper_camel_case(self, kebab_str: str) -> str:
-        def _capitalize_first_letter(input: str) -> str:
-            return f'{input[0].capitalize()}input[1:]'
-    
-        return ''.join(
-            list(
-                map(kebab_str.split('-'), _capitalize_first_letter)
-            )
-        )
+        return kebab_to_upper_camel_case(obj['service'])
