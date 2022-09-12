@@ -1,0 +1,84 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: serverless-step-functions-example
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: "2"
+
+useDotenv: true
+variablesResolutionMode: 20210326
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+  stage: prod
+  region: ap-northeast-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - states:*
+            - s3:*
+            - iam:PassRole
+            - lambda:InvokeFunction
+            - secretsmanager:GetSecretValue
+          Resource:
+            - "*"
+
+custom:
+  pythonRequirements:
+    pythonBin: python3
+    dockerizePip: true
+    slim: true
+    zip: true
+    layer: false
+  default_stage: prod
+  stage: ${opt:stage, self:custom.default_stage}
+  commonTag:
+    - Key: "Service"
+      Value: ${self:service}
+  requirements_service: python-requirements-layer # layer側で設定したservice
+  requirements_export: PythonRequirementsLambdaLayerExport # layer側で設定したOutputsの名前
+  requirements_layer: ${cf:${self:custom.requirements_service}-${self:custom.stage}.${self:custom.requirements_export}}
+  stepFunctionsLocal:
+    accountId: '012345678901'
+    region: ap-northeast-1
+    lambdaEndpoint: http://localhost:4002
+  serverless-offline:
+    httpPort: 4002
+
+package:
+  include:
+    - handler/**
+  exclude:
+    - "**/*"
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-step-functions
+  - ./serverless-step-functions-local
+  - serverless-sam
+
+functions:
+  EntryPoint: ${file(./config/functions/entrypoint.yml)}
+  Worker: ${file(./config/functions/worker.yml)}
+  Aggregate: ${file(./config/functions/aggregate.yml)}
+
+stepFunctions: ${file(./config/statemachine/taskdef.yml)}

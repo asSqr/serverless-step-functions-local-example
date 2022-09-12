@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "serverless-dotenv-plugin": "^4.0.2",
+    "serverless-python-requirements": "^5.4.0",
+    "serverless-sam": "^0.2.0",
+    "serverless-step-functions": "^3.8.0",
+    "serverless-step-functions-local": "^0.4.0",
+    "stepfunctions-localhost": "^0.2.0"
+  }
+}

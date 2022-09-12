@@ -1,0 +1,26 @@
+stateMachines:
+  StateMachine:
+    definition:
+      StartAt: EntryPoint
+      States:
+        EntryPoint:
+          Type: Task
+          Resource:
+            Fn::GetAtt: [EntryPointLambdaFunction, Arn]
+          Next: Distribution
+        Distribution:
+          Type: Map
+          Next: Aggregate
+          Iterator:
+            StartAt: Worker
+            States:
+              Worker:
+                Type: Task
+                Resource:
+                  Fn::GetAtt: [WorkerLambdaFunction, Arn]
+                End: True
+        Aggregate:
+          Type: Task
+          Resource:
+            Fn::GetAtt: [AggregateLambdaFunction, Arn]
+          End: True
