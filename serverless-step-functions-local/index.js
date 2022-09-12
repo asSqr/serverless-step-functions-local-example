@@ -183,15 +183,9 @@ class ServerlessStepFunctionsLocal {
     
     parsed = this.serverless.service;
 
-    this.log(`parsed: ${JSON.stringify(parsed.stepFunctions)}`);
-
     this.stateMachines = parsed.stepFunctions.stateMachines;
 
-    this.log(`stateMachines: ${JSON.stringify(this.stateMachines)}`);
-
     this.provider = this.serverless.getProvider('aws');
-
-    this.log(`stackName: ${this.provider.naming.getStackName()}`);
 
     const stackData = await this.provider
         .request(
@@ -201,8 +195,6 @@ class ServerlessStepFunctionsLocal {
             this.provider.getStage(),
             this.provider.getRegion()
         );
-
-    this.log(`stackData: ${JSON.stringify(stackData)}`);
 
     const SERVERLESS_LAMBDA_FUNCTION_ARN_SUFFIX = 'QualifiedArn';
 
@@ -276,8 +268,6 @@ class ServerlessStepFunctionsLocal {
 
         this.stateMachines[stateMachine].definition = resolveArn(definition);
     }
-
-    this.log(`stateMachines: ${JSON.stringify(this.stateMachines)}`);
 
     if (parsed.custom &&
       parsed.custom.stepFunctionsLocal &&
@@ -395,8 +385,6 @@ class ServerlessStepFunctionsLocal {
             }
           ]
         };
-
-        console.log(params);
 
         this.eventBridgeAPI.putEvents(params, function(err, data) {
           if (err) {
