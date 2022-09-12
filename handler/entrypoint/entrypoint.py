@@ -1,2 +1,2 @@
-def entrypoint():
-    return {}
+def entrypoint(event, context):
+    return []

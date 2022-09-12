@@ -1,2 +1,2 @@
-def worker():
+def worker(event, context):
     return {}

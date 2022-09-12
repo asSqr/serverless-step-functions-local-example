@@ -80,7 +80,7 @@ class Config:
             identifier = f'{service_name}{handler_name}'
             
             self.OUTPUT_SETTINGS[identifier] = {
-                'Description': identifier,
+                'Description': handler_name,
                 'Value': f'!GetAtt {identifier}.Arn'
             }
     

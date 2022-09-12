@@ -93,50 +93,31 @@ First, deploy with serverless framework.
     $ npx serverless sam export --output ./template.yml
     $ python ./scripts/sam_template_converter/main.py
     ```
-    Then, add the below snippet to `template.yml` under `Resources:`:
-    ```yaml
-        LambdaLayer:
-            Type: AWS::Serverless::LayerVersion
-            Properties:
-                Description: Layer description
-                ContentUri: 'layer_requirements/'
-                CompatibleRuntimes:
-                    - python3.8
-            Metadata:
-                BuildMethod: python3.8
 
-    Outputs:
-        ServerlessStepFunctionsExampleentrypoint:
-            Description: 'serverless-step-functions-example-entrypoint'
-            Value: !GetAtt ServerlessStepFunctionsExampleentrypoint.Arn
-        ServerlessStepFunctionsExampleworker:
-            Description: 'serverless-step-functions-example-worker'
-            Value: !GetAtt ServerlessStepFunctionsExampleworker.Arn
-        ServerlessStepFunctionsExampleaggregate:
-            Description: 'serverless-step-functions-example-aggregate'
-            Value: !GetAtt ServerlessStepFunctionsExampleaggregate.Arn
-    ```
-    And add the below setting to each Lambda function:
-    ```yaml
-    Layers:
-        - !Ref LambdaLayer
-    ```
-    c.f. https://qiita.com/hayao_k/items/f8c7ad5e35e29d590957 (in Japanese)
+    cf. https://qiita.com/hayao_k/items/f8c7ad5e35e29d590957 (in Japanese)
 - build SAM layer
     ```bash
     $ sam build --use-container LambdaLayer
     ```
+    if there is an error such as
+    ```bash
+    Error: PythonPipBuilder:CopySource - [Errno 2] No such file or directory: '/tmp/samcli/source/.serverless/pythonRequirements.zip'
+    ```
+    remove the `layer_requirements/.serverless` folder and build again:
+    ```bash
+    $ rm -rf ./layer_requirements/.serverless
+    ```
 - execute two commands below on independent terminals to invoke local Step Functions   
-c.f. https://kazuhira-r.hatenablog.com/entry/2019/04/23/000355 (in Japanese)
+cf. https://kazuhira-r.hatenablog.com/entry/2019/04/23/000355 (in Japanese)
   ```bash
   $ npx serverless stepf offline --aws-profile test-profile
   ```
   ```bash
   $ aws stepfunctions --endpoint http://localhost:8083 start-execution --state-machine arn:aws:states:ap-northeast-1:012345678901:stateMachine:StateMachine --name Lambda_local --input ""
   ```
-- invoke a single Lambda function
+- if you want to invoke a single Lambda function,
     ```bash
     $ aws lambda invoke /dev/null \
-    --endpoint-url http://localhost:4000 \
-    --function-name EntryPoint
+    --endpoint-url http://localhost:4002 \
+    --function-name ServerlessStepFunctionsExampleentrypoint
     ```

@@ -1,2 +1,2 @@
-def aggregate():
+def aggregate(event, context):
     return {}
